@@ -1,7 +1,7 @@
 const {DataTypes} = require("sequelize");
 const db = require("../db");
 const User = db.define("listing", {
-    sellerid: { //Primary to User.ID foreign
+    seller_id: { //Primary to User.ID foreign
         type: DataTypes.NUMBER,
         allowNull: false,
         unique: false,
@@ -26,7 +26,7 @@ const User = db.define("listing", {
         allowNull: false,
         unique: false,
     },
-    new: {
+    new_used: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         unique: false,

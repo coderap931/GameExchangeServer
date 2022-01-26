@@ -3,7 +3,6 @@ const router = express.Router();
 const {User} = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-// const {Op} = require("sequelize");
 
 //!User Register Endpoint
 router.post("/register", async (req, res) => {
@@ -115,7 +114,7 @@ router.delete('/delete/:id', async (req, res) => {
         const result = await User.destroy(query);
         res.status(200).json(result);
     } catch (err) {
-        res.status(500).json({err});
+        res.status(500).json({error: err});
     }
 })
 

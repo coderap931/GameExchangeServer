@@ -10,7 +10,7 @@ const validateJWT = async (req, res, next) => {
     ) {
         const { authorization } = req.headers;
         const result = authorization.includes("Bearer") ? authorization.split(" ")[1] : authorization;
-        const payload = authorization ? jwt.verify( //failing starts here
+        const payload = authorization ? jwt.verify(
             result,
             process.env.JWT_SECRET
         )
