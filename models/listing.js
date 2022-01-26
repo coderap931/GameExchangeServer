@@ -11,7 +11,7 @@ const User = db.define("listing", {
         allowNull: false,
         unique: false,
     },
-    name: {
+    item_name: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: false,

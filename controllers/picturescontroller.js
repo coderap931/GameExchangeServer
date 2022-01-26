@@ -3,7 +3,7 @@ const router = express.Router();
 const {Pictures} = require("../models");
 
 //!Pictures Create Endpoint
-router.post("/:id", async (req, res) => {
+router.post("/create/:id", async (req, res) => {
     const {picture_one, picture_two, picture_three, picture_four, picture_five} = req.body.pictures;
     const listingId = req.params.id;
     
@@ -17,7 +17,7 @@ router.post("/:id", async (req, res) => {
         picture_five,
     }
 
-    //add new pictures to db
+    //add new Pictures to db
     try{
         const newPictures = await Pictures.create(picturesEntry);
         res.status(200).json(newPictures);
@@ -27,7 +27,7 @@ router.post("/:id", async (req, res) => {
 });
 
 //!Pictures Lookup Endpoint
-router.get('/:id', async (req, res) => {
+router.get('/lookup/:id', async (req, res) => {
     const listingId = req.params.id;
     //get specific pictures from db by listing id
     try{
@@ -46,7 +46,7 @@ router.get('/:id', async (req, res) => {
 });
 
 //!Pictures Edit Endpoint
-router.put('/:id', async (req, res) => {
+router.put('/edit/:id', async (req, res) => {
     const {picture_one, picture_two, picture_three, picture_four, picture_five} = req.body.pictures;
     const listingId = req.params.id;
 

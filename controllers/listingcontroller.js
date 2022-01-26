@@ -5,14 +5,14 @@ const {Listing} = require('../models');
 
 //!Listing Create Endpoint
 router.post('/create', validateJWT, async (req, res) => {
-    const {sold, name, description, platform, new_used, condition, price, pictures} = req.body.listing;
+    const {sold, item_name, description, platform, new_used, condition, price, pictures} = req.body.listing;
     const id = req.user;
 
     //define new listing
     const listingEntry = {
         seller_id: id,
         sold,
-        name,
+        item_name,
         description,
         platform,
         new_used,
@@ -67,7 +67,7 @@ router.get('/listinginfo/:id', async (req, res) => {
 
 //!Listing Edit Endpoint
 router.put('/edit/:id', validateJWT, async (req, res) => {
-    const {sold, name, description, platform, new_used, condition, price, pictures} = req.body.listing;
+    const {sold, item_name, description, platform, new_used, condition, price, pictures} = req.body.listing;
     const listingId = req.params.id;
     const id = req.user;
 
@@ -81,7 +81,7 @@ router.put('/edit/:id', validateJWT, async (req, res) => {
     //define editted listing
     const updatedListing = {
         sold: sold,
-        name: name,
+        item_name: item_name,
         description: description,
         platform: platform,
         new_used: new_used,

@@ -8,14 +8,14 @@ const jwt = require("jsonwebtoken");
 router.post("/register", async (req, res) => {
     //register new user in db
     try{
-        const{firstname, lastname, username, email, password} = req.body.user;
+        const{first_name, last_name, username, email, password} = req.body.user;
         //encrypt password
         const salt = bcrypt.genSaltSync(); //generate salt
         const pwHashed = bcrypt.hashSync(password, salt); //hash password
         const newUser = await User.create({//create user server-side
             //v key     v value
-            firstname: firstname,
-            lastname: lastname,
+            first_name: first_name,
+            last_name: last_name,
             username: username,
             email: email,
             password: pwHashed,

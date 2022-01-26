@@ -1,27 +1,27 @@
 const {DataTypes} = require("sequelize");
 const db = require("../db");
 const User = db.define("order", {
-    listingid: { //Primary to Listing.ID foreign
+    listing_id: { //Primary to Listing.ID foreign
         type: DataTypes.NUMBER,
         allowNull: false,
         unique: true,
     },
-    buyerid: { //Primary to User.ID foreign
+    buyer_id: { //Primary to User.ID foreign
         type: DataTypes.NUMBER,
         allowNull: false,
         unique: false,
     },
-    totalprice: {
+    total_price: {
         type: DataTypes.NUMBER,
         allowNull: false,
         unique: false,
     },
-    datetime: {
+    date_time: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: false,
     },
-    shippingaddress: {
+    shipping_address: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: false,
