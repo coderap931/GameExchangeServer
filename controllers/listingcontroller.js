@@ -68,7 +68,7 @@ router.get('/listinginfo/:id', async (req, res) => {
 //!Listing Edit Endpoint
 router.put('/edit/:id', validateJWT, async (req, res) => {
     const {sold, name, description, platform, new_used, condition, price, pictures} = req.body.listing;
-    const listingId = req.params.listingId;
+    const listingId = req.params.id;
     const id = req.user;
 
     const query = {
@@ -100,7 +100,7 @@ router.put('/edit/:id', validateJWT, async (req, res) => {
 });
 
 //!Listing Delete Endpoint
-//*Admin endpoint
+//*Admin Endpoint
 router.delete('/delete/:id', validateJWT, async (req, res) => {
     const listingId = req.params.id;
     const id = req.user;

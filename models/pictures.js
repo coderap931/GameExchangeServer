@@ -1,32 +1,32 @@
 const {DataTypes} = require("sequelize");
 const db = require("../db");
 const User = db.define("pictures", {
-    listingid: { //Primary to Listing.ID foreign
+    listing_id: { //Primary to Listing.ID foreign
         type: DataTypes.NUM,
         allowNull: false,
         unique: true,
     },
-    pictureone: {
+    picture_one: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: false,
     },
-    picturetwo: {
+    picture_two: {
         type: DataTypes.STRING,
         allowNull: true,
         unique: false,
     },
-    picturethree: {
+    picture_three: {
         type: DataTypes.STRING,
         allowNull: true,
         unique: false,
     },
-    picturefour: {
+    picture_four: {
         type: DataTypes.STRING,
         allowNull: true,
         unique: false,
     },
-    picturefive: {
+    picture_five: {
         type: DataTypes.STRING,
         allowNull: true,
         unique: false,
