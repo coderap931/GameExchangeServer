@@ -79,23 +79,29 @@ router.post("/login", async (req, res) => {
 //**Admin route
 router.get('/userinfo/:id', async (req, res) => {
     const targetUserId = req.params.id;
-    //find user in db by id
+    const role = req.user.role;
+    //find user in db by id (if requesting user is admin)
     try {
         const query = {
             where: {
                 id: targetUserId,
             }
         };
-        //return the users info
 
-        //if user is found
-        const userReturned = await User.findOne(query);
-        res.status(200).json(userReturned);
+        //if user is found, return them (if requesting user is admin)
+        if (role === 'Admin'){
+            const userReturned = await User.findOne(query);
+            res.status(200).json(userReturned);
+        } else {
+            res.status(401).json({
+                message: `You must be an administrator to view user details`,
+            })
+        }
 
-        //if user is not found
+        //if user is not found, return error
     } catch (err) {
         res.status(500).json({
-            message: `User not found: ${err}`
+            message: `User not found: ${err}`,
         })
     }
 })
@@ -104,6 +110,7 @@ router.get('/userinfo/:id', async (req, res) => {
 //**Admin route
 router.delete('/delete/:id', async (req, res) => {
     const targetUserId = req.params.id;
+    const role = rew.user.role;
     //delete user in db by id
     try{
         const query = {
@@ -111,8 +118,15 @@ router.delete('/delete/:id', async (req, res) => {
                 id: targetUserId,
             }
         };
-        const result = await User.destroy(query);
-        res.status(200).json(result);
+        if (role === 'Admin'){
+            const result = await User.destroy(query);
+            res.status(200).json(result);
+        } else {
+            res.status(401).json({
+                message: `You must be an administrator to delete a user`,
+            })
+        }
+
     } catch (err) {
         res.status(500).json({error: err});
     }

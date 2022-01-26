@@ -104,17 +104,25 @@ router.put('/edit/:id', validateJWT, async (req, res) => {
 router.delete('/delete/:id', validateJWT, async (req, res) => {
     const listingId = req.params.id;
     const id = req.user;
+    const role = req.user.role;
 
     //delete listing from db by id
     try{
         const query = {
             where: {
                 id: listingId,
-                seller_id: id,
             }
         };
-        const result = await Listing.destroy(query);
-        res.status(200).json(result);
+        const listingResult = await Listing.findOne(query);
+        const sellerId = listingResult.seller_id;
+        if (id === sellerId || role === 'Admin'){
+            const destroyResult = await Listing.destroy(query);
+            res.status(200).json(destroyResult);
+        } else {
+            res.status(401).json({
+                message: `You must be the seller or an administrator to delete this listing`,
+            })
+        }
     } catch (err) {
         res.status(500).json({error: err});
     }

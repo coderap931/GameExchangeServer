@@ -78,7 +78,7 @@ router.put('/edit/:id', async (req, res) => {
 //*Admin Endpoint
 router.delete('/delete/:id', async (req, res) => {
     const listingId = req.params.id;
-
+    const role = req.user.role;
     //delete pictures from db by listing id
     try{
         const query = {
@@ -86,8 +86,15 @@ router.delete('/delete/:id', async (req, res) => {
                 listing_id: listingId,
             }
         };
-        const result = await Pictures.destroy(query);
-        res.status(200).json(result);
+        if (role === 'Admin'){
+            const result = await Pictures.destroy(query);
+            res.status(200).json(result);
+        } else {
+            res.status(401).json({
+                message: `You must be an administrator to delete pictures`,
+            })
+        }
+
     } catch (err) {
         res.status(500).json({error: err});
     }

@@ -28,7 +28,6 @@ router.post('/create/:id', validateJWT, async (req, res) => {
 });
 
 //!Order Get All by User Endpoint
-//*Admin Endpoint
 router.get('/all', validateJWT, async (req, res) => {
     const id = req.user;
     //get all orders for user from db by userId
@@ -51,8 +50,9 @@ router.get('/all', validateJWT, async (req, res) => {
 //*Admin Endpoint
 router.get('/orderinfo/:id', validateJWT, async (req, res) => {
     const id = req.user;
+    const role = req.user.role;
     const orderId = req.params.id;
-    //get specific order from db by id (if user is buyer or seller)
+    //get specific order from db by id (if requesting user is buyer or seller or admin)
     try{
         const query = {
             where: {
@@ -69,11 +69,11 @@ router.get('/orderinfo/:id', validateJWT, async (req, res) => {
         };
         const listingReturned = await Listing.findOne(query_two);
         const sellerId = listingReturned.seller_id;
-        if(id === buyerId || id === sellerId){
+        if(id === buyerId || id === sellerId || role === 'Admin'){
             res.status(200).json(orderReturned);
         } else {
             res.status(401).json({
-                message: `You must be the buyer or seller to view this order's details`,
+                message: `You must be the buyer or seller or administrator to view this order's details`,
             })
         }
     } catch (err) {
@@ -88,7 +88,7 @@ router.get('/orderinfo/:id', validateJWT, async (req, res) => {
 router.delete('/delete/:id', validateJWT, async (req, res) => {
     const orderId = req.params.id;
     const role = req.user.role;
-    //delete order from db by id and change listing.sold bool to false from true (if user is admin)
+    //delete order from db by id and change listing.sold bool to false from true (if requesting user is admin)
     try{
         const query = {
             where: {
