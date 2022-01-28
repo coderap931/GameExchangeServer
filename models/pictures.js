@@ -1,12 +1,6 @@
 const {DataTypes} = require("sequelize");
 const db = require("../db");
 const Pictures = db.define("pictures", {
-    listing_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        unique: true,
-        required: true,
-    },
     picture_one: {
         type: DataTypes.STRING,
         allowNull: false,

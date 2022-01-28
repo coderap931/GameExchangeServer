@@ -7,18 +7,6 @@ const Order = db.define("order", {
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
     },
-    listing_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        unique: true,
-        required: true,
-    },
-    buyer_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        unique: false,
-        required: true,
-    },
     total_price: {
         type: DataTypes.DECIMAL,
         allowNull: false,

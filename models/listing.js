@@ -7,11 +7,6 @@ const Listing = db.define("listing", {
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
     },
-    seller_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        unique: false,
-    },
     sold: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

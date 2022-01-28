@@ -40,7 +40,7 @@ const User = db.define("user", {
         unique: false,
     },
     role: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM('Admin', 'Client'),
         allowNull: false,
         unique: false,
     },
