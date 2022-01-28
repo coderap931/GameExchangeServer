@@ -1,6 +1,12 @@
 const {DataTypes} = require("sequelize");
 const db = require("../db");
 const User = db.define("user", {
+    id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+    },
     first_name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -15,11 +21,13 @@ const User = db.define("user", {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
+        required: true,
     },
     email: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
+        required: true,
     },
     password: {
         type: DataTypes.STRING,
@@ -27,7 +35,7 @@ const User = db.define("user", {
         unique: false,
     },
     rating: {
-        type: DataTypes.NUMBER,
+        type: DataTypes.INTEGER,
         allowNull: false,
         unique: false,
     },

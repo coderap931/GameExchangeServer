@@ -1,8 +1,14 @@
 const {DataTypes} = require("sequelize");
 const db = require("../db");
-const User = db.define("listing", {
-    seller_id: { //Primary to User.ID foreign
-        type: DataTypes.NUMBER,
+const Listing = db.define("listing", {
+    id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+    },
+    seller_id: {
+        type: DataTypes.UUID,
         allowNull: false,
         unique: false,
     },
@@ -12,12 +18,12 @@ const User = db.define("listing", {
         unique: false,
     },
     item_name: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
         unique: false,
     },
     description: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
         unique: false,
     },
@@ -32,12 +38,12 @@ const User = db.define("listing", {
         unique: false,
     },
     condition: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
         unique: false,
     },
     price: {
-        type: DataTypes.NUMBER,
+        type: DataTypes.DECIMAL,
         allowNull: false,
         unique: false,
     },

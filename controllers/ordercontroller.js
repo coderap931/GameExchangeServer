@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 let validateJWT = require('../middleware/validate-jwt');
-const {Order, Order, Listing} = require('../models');
+const {Order, Listing} = require('../models');
 
 //!Order Create Endpoint
 router.post('/create/:id', validateJWT, async (req, res) => {

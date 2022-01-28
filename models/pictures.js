@@ -1,10 +1,11 @@
 const {DataTypes} = require("sequelize");
 const db = require("../db");
-const User = db.define("pictures", {
-    listing_id: { //Primary to Listing.ID foreign
-        type: DataTypes.NUM,
+const Pictures = db.define("pictures", {
+    listing_id: {
+        type: DataTypes.UUID,
         allowNull: false,
         unique: true,
+        required: true,
     },
     picture_one: {
         type: DataTypes.STRING,
@@ -33,4 +34,4 @@ const User = db.define("pictures", {
     },
 });
 
-module.exports = User;
+module.exports = Pictures;
