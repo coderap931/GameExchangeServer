@@ -1,7 +1,7 @@
 require("dotenv").config();
 const Express = require("express");
-const db = require("./db");
 const app = Express();
+const db = require("./db");
 
 app.use(require("./middleware/headers"));
 const controllers = require("./controllers");
@@ -17,7 +17,7 @@ db.authenticate()
     .then(() => db.sync())
     .then(() => {
         app.listen(process.env.PORT, () =>
-        console.log(`[Server: ] App is listening on Port ${process.env.PORT}`));
+        console.log(`[Server: ] App is listening on Port ${process.env.DATABASE_PORT}`));
     })
     .catch((err) => {
         console.log(`[Server: ] Server Crashed. Error: ${err}`);

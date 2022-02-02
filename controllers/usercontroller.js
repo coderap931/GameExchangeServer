@@ -12,7 +12,7 @@ router.post("/register", async (req, res) => {
         //encrypt password
         const salt = bcrypt.genSaltSync(); //generate salt
         const pwHashed = bcrypt.hashSync(password, salt); //hash password
-        const newUser = await User.create({//create user server-side
+        const newUser = await User.create({ //create user server-side
             //v key     v value
             first_name: first_name,
             last_name: last_name,
