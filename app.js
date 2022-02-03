@@ -1,7 +1,7 @@
 require("dotenv").config();
 const Express = require("express");
 const app = Express();
-const db = require("./db");
+const dbConnection = require("./db");
 
 app.use(require("./middleware/headers"));
 const controllers = require("./controllers");
@@ -13,10 +13,10 @@ app.use("/listing", controllers.listingcontroller);
 app.use("/order", controllers.ordercontroller);
 app.use("/pictures", controllers.picturescontroller);
 
-db.authenticate()
-    .then(() => db.sync())
+dbConnection.authenticate()
+    .then(() => dbConnection.sync())
     .then(() => {
-        app.listen(process.env.PORT, () =>
+        app.listen(3000, () =>
         console.log(`[Server: ] App is listening on Port ${process.env.DATABASE_PORT}`));
     })
     .catch((err) => {

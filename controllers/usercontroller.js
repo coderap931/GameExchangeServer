@@ -8,10 +8,16 @@ const jwt = require("jsonwebtoken");
 router.post("/register", async (req, res) => {
     //register new user in db
     try{
-        const{first_name, last_name, username, email, password} = req.body.user;
+        console.log("entered try");
+        const{first_name, last_name, username, email, password, role} = req.body.user;
+        console.log("got values from body");
+        console.log("Values: ", first_name, last_name, username, email, password, role);
         //encrypt password
         const salt = bcrypt.genSaltSync(); //generate salt
+        console.log("generated salt");
         const pwHashed = bcrypt.hashSync(password, salt); //hash password
+        console.log("hashed password");
+        console.log(pwHashed);
         const newUser = await User.create({ //create user server-side
             //v key     v value
             first_name: first_name,
@@ -19,10 +25,12 @@ router.post("/register", async (req, res) => {
             username: username,
             email: email,
             password: pwHashed,
+            rating: 100,
+            role: role,
         });
-
+        console.log("newUser assigned values");
         let token = jwt.sign({id: newUser.id}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
-
+        console.log("assigning token");
         res.status(200).json({
             message: "Success",
             user: newUser,

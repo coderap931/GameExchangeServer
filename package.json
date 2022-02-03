@@ -20,6 +20,14 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.14.1"
-  }
+    "sequelize": "^6.15.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coderap931/GameExchangeServer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/coderap931/GameExchangeServer/issues"
+  },
+  "homepage": "https://github.com/coderap931/GameExchangeServer#readme"
 }
