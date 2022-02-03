@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 let validateJWT = require('../middleware/validate-jwt');
-const {Order, Listing} = require('../models');
+const {models} = require('../models');
 
 //!Order Create Endpoint
 router.post('/create/:id', validateJWT, async (req, res) => {
@@ -20,7 +20,7 @@ router.post('/create/:id', validateJWT, async (req, res) => {
 
     //add new Order to db
     try{
-        const newOrder = await Order.create(orderEntry);
+        const newOrder = await models.Order.create(orderEntry);
         res.status(200).json(newOrder);
     } catch (err) {
         res.status(500).json({error: err});
@@ -37,7 +37,7 @@ router.get('/all', validateJWT, async (req, res) => {
                 buyer_id: id,
             }
         }
-        const Orders = await Order.findAll(query);
+        const Orders = await models.Order.findAll(query);
         res.status(200).json(Orders)
     } catch (err) {
         res.status(500).json({
@@ -59,7 +59,7 @@ router.get('/orderinfo/:id', validateJWT, async (req, res) => {
                 id: orderId,
             }
         };
-        const orderReturned = await Order.findOne(query);
+        const orderReturned = await models.Order.findOne(query);
         const listingId = orderReturned.listing_id;
         const buyerId = orderReturned.buyer_id;
         const query_two = {
@@ -67,7 +67,7 @@ router.get('/orderinfo/:id', validateJWT, async (req, res) => {
                 id: listingId,
             }
         };
-        const listingReturned = await Listing.findOne(query_two);
+        const listingReturned = await models.Listing.findOne(query_two);
         const sellerId = listingReturned.seller_id;
         if(id === buyerId || id === sellerId || role === 'Admin'){
             res.status(200).json(orderReturned);
@@ -96,7 +96,7 @@ router.delete('/delete/:id', validateJWT, async (req, res) => {
             }
         };
         if (role === 'Admin') {
-            const result = await Order.findOne(query);
+            const result = await models.Order.findOne(query);
             const listingId = result.listing_id;
             const query_two = {
                 where: {
@@ -113,8 +113,8 @@ router.delete('/delete/:id', validateJWT, async (req, res) => {
                 price,
                 pictures,
             }
-            const relistResult = await Listing.update(updatedListing, query_two);
-            const destroyResult = await Order.destroy(query);
+            const relistResult = await models.Listing.update(updatedListing, query_two);
+            const destroyResult = await models.Order.destroy(query);
             res.status(200).json(relistResult, destroyResult);
         } else {
             res.status(401).json({

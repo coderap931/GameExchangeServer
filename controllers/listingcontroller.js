@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 let validateJWT = require('../middleware/validate-jwt');
-const {Listing} = require('../models');
+const {models} = require('../models');
 
 //!Listing Create Endpoint
 router.post('/create', validateJWT, async (req, res) => {
@@ -23,7 +23,7 @@ router.post('/create', validateJWT, async (req, res) => {
 
     //add new listing to db
     try{
-        const newListing = await Listing.create(listingEntry);
+        const newListing = await models.Listing.create(listingEntry);
         res.status(200).json(newListing);
     } catch (err) {
         res.status(500).json({error: err});
@@ -34,7 +34,7 @@ router.post('/create', validateJWT, async (req, res) => {
 router.get('/all', async (req, res) => {
     //get all listings from db
     try{
-        const Listings = await Listing.findAll();
+        const Listings = await models.Listing.findAll();
         res.status(200).json({
             listings: Listings,
             message: "Listings fetched",
@@ -56,7 +56,7 @@ router.get('/listinginfo/:id', async (req, res) => {
                 id: listingId,
             }
         };
-        const listingReturned = await Listing.findOne(query);
+        const listingReturned = await models.Listing.findOne(query);
         res.status(200).json(listingReturned);
     } catch (err) {
         res.status(500).json({
@@ -92,7 +92,7 @@ router.put('/edit/:id', validateJWT, async (req, res) => {
 
     //update listing
     try{
-        const update = await Listing.update(updatedListing, query);
+        const update = await models.Listing.update(updatedListing, query);
         res.status(200).json(update);
     } catch (err) {
         res.status(500).json({error: err});
@@ -113,10 +113,10 @@ router.delete('/delete/:id', validateJWT, async (req, res) => {
                 id: listingId,
             }
         };
-        const listingResult = await Listing.findOne(query);
+        const listingResult = await models.Listing.findOne(query);
         const sellerId = listingResult.seller_id;
         if (id === sellerId || role === 'Admin'){
-            const destroyResult = await Listing.destroy(query);
+            const destroyResult = await models.Listing.destroy(query);
             res.status(200).json(destroyResult);
         } else {
             res.status(401).json({

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {Pictures} = require("../models");
+const {models} = require("../models");
 
 //!Pictures Create Endpoint
 router.post("/create/:id", async (req, res) => {
@@ -19,7 +19,7 @@ router.post("/create/:id", async (req, res) => {
 
     //add new Pictures to db
     try{
-        const newPictures = await Pictures.create(picturesEntry);
+        const newPictures = await models.Pictures.create(picturesEntry);
         res.status(200).json(newPictures);
     } catch (err) {
         res.status(500).json({error: err});
@@ -36,7 +36,7 @@ router.get('/lookup/:id', async (req, res) => {
                 listing_id: listingId,
             }
         };
-        const picturesReturned = await Pictures.findOne(query);
+        const picturesReturned = await models.Pictures.findOne(query);
         res.status(200).json(picturesReturned);
     } catch (err) {
         res.status(500).json({
@@ -67,7 +67,7 @@ router.put('/edit/:id', async (req, res) => {
 
     //update pictures
     try{
-        const update = await Pictures.update(updatedPictures, query);
+        const update = await models.Pictures.update(updatedPictures, query);
         res.status(200).json(update);
     } catch (err) {
         res.status(500).json({error: err});
@@ -87,7 +87,7 @@ router.delete('/delete/:id', async (req, res) => {
             }
         };
         if (role === 'Admin'){
-            const result = await Pictures.destroy(query);
+            const result = await models.Pictures.destroy(query);
             res.status(200).json(result);
         } else {
             res.status(401).json({

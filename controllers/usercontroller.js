@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {User} = require("../models");
+const {models} = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -9,24 +9,22 @@ router.post("/register", async (req, res) => {
     //register new user in db
     try{
         console.log("entered try");
-        const{first_name, last_name, username, email, password, role} = req.body.user;
+        const{first_name, last_name, username, email, password} = req.body.user;
         console.log("got values from body");
-        console.log("Values: ", first_name, last_name, username, email, password, role);
+        console.log("Values: ", first_name, last_name, username, email, password);
         //encrypt password
         const salt = bcrypt.genSaltSync(); //generate salt
         console.log("generated salt");
         const pwHashed = bcrypt.hashSync(password, salt); //hash password
         console.log("hashed password");
         console.log(pwHashed);
-        const newUser = await User.create({ //create user server-side
+        const newUser = await models.User.create({ //create user server-side
             //v key     v value
             first_name: first_name,
             last_name: last_name,
             username: username,
             email: email,
             password: pwHashed,
-            rating: 100,
-            role: role,
         });
         console.log("newUser assigned values");
         let token = jwt.sign({id: newUser.id}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
@@ -50,7 +48,7 @@ router.post("/login", async (req, res) => {
     const {username, password} = req.body.user;
     //find user in db by username
     try{
-        const user = await User.findOne({
+        const user = await models.User.findOne({
             where: {
                 username: username,
             }
@@ -67,12 +65,13 @@ router.post("/login", async (req, res) => {
 
             //if passwords do match
         } else {
+            //!Reexamine logic, why is userAuth declared but not read?
             const userAuth = bcrypt.compareSync(password, user.password);
             let token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
             res.status(200).json({
                 username: user.username,
                 message: "Login successful",
-                user: User,
+                user: userAuth,
                 sessionToken: token,
             });
         }
@@ -98,7 +97,7 @@ router.get('/userinfo/:id', async (req, res) => {
 
         //if user is found, return them (if requesting user is admin)
         if (role === 'Admin'){
-            const userReturned = await User.findOne(query);
+            const userReturned = await models.User.findOne(query);
             res.status(200).json(userReturned);
         } else {
             res.status(401).json({
@@ -127,7 +126,7 @@ router.delete('/delete/:id', async (req, res) => {
             }
         };
         if (role === 'Admin'){
-            const result = await User.destroy(query);
+            const result = await models.User.destroy(query);
             res.status(200).json(result);
         } else {
             res.status(401).json({
