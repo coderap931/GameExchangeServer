@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {models} = require("../models");
 
+//?NOT WORKING
 //!Pictures Create Endpoint
 router.post("/create/:id", async (req, res) => {
     const {picture_one, picture_two, picture_three, picture_four, picture_five} = req.body.pictures;
@@ -26,6 +27,7 @@ router.post("/create/:id", async (req, res) => {
     }
 });
 
+//*SORT WORKING
 //!Pictures Lookup Endpoint
 router.get('/lookup/:id', async (req, res) => {
     const listingId = req.params.id;
@@ -45,6 +47,8 @@ router.get('/lookup/:id', async (req, res) => {
     }
 });
 
+//?NOT WORKING
+//!!!!!!!ADD VALIDATE_JWT!!!!!!!!!
 //!Pictures Edit Endpoint
 router.put('/edit/:id', async (req, res) => {
     const {picture_one, picture_two, picture_three, picture_four, picture_five} = req.body.pictures;
@@ -74,6 +78,7 @@ router.put('/edit/:id', async (req, res) => {
     }
 });
 
+//?NOT WORKING
 //!Pictures Delete Endpoint
 //*Admin Endpoint
 router.delete('/delete/:id', async (req, res) => {

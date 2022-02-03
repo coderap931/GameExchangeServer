@@ -3,18 +3,19 @@ const router = express.Router();
 let validateJWT = require('../middleware/validate-jwt');
 const {models} = require('../models');
 
+//*SORTA WORKING
 //!Order Create Endpoint
 router.post('/create/:id', validateJWT, async (req, res) => {
-    const {total_price, date_time, shipping_address} = req.body.order;
+    const {total_price, shipping_address} = req.body.order;
     const listingId = req.params.id;
-    const buyerId = req.user;
+    const buyerId = req.user.id;
 
     //define new Order for Listing
     const orderEntry = {
         listing_id: listingId,
         buyer_id: buyerId,
         total_price,
-        date_time,
+        date_time: new Date,
         shipping_address,
     }
 
@@ -27,9 +28,10 @@ router.post('/create/:id', validateJWT, async (req, res) => {
     }
 });
 
+//*SORTA WORKING
 //!Order Get All by User Endpoint
 router.get('/all', validateJWT, async (req, res) => {
-    const id = req.user;
+    const id = req.user.id;
     //get all orders for user from db by userId
     try{
         const query = {
@@ -46,6 +48,7 @@ router.get('/all', validateJWT, async (req, res) => {
     }
 });
 
+//*SORTA WORKING
 //!Order Lookup Endpoint
 //*Admin Endpoint
 router.get('/orderinfo/:id', validateJWT, async (req, res) => {
@@ -83,6 +86,7 @@ router.get('/orderinfo/:id', validateJWT, async (req, res) => {
     }
 });
 
+//?NOT WORKING
 //!Order Delete Endpoint
 //*Admin Endpoint
 router.delete('/delete/:id', validateJWT, async (req, res) => {

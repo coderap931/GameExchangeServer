@@ -4,14 +4,15 @@ const {models} = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+//WORKING
 //!User Register Endpoint
 router.post("/register", async (req, res) => {
     //register new user in db
     try{
         console.log("entered try");
-        const{first_name, last_name, username, email, password} = req.body.user;
+        const{first_name, last_name, username, email, password, role} = req.body.user;
         console.log("got values from body");
-        console.log("Values: ", first_name, last_name, username, email, password);
+        console.log("Values: ", first_name, last_name, username, email, password, role);
         //encrypt password
         const salt = bcrypt.genSaltSync(); //generate salt
         console.log("generated salt");
@@ -19,12 +20,13 @@ router.post("/register", async (req, res) => {
         console.log("hashed password");
         console.log(pwHashed);
         const newUser = await models.User.create({ //create user server-side
-            //v key     v value
-            first_name: first_name,
-            last_name: last_name,
-            username: username,
-            email: email,
+            first_name,
+            last_name,
+            username,
+            email,
             password: pwHashed,
+            rating: 100,
+            role,
         });
         console.log("newUser assigned values");
         let token = jwt.sign({id: newUser.id}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
@@ -43,6 +45,7 @@ router.post("/register", async (req, res) => {
     }
 });
 
+//WORKING
 //!User Login Endpoint
 router.post("/login", async (req, res) => {
     const {username, password} = req.body.user;
@@ -82,16 +85,17 @@ router.post("/login", async (req, res) => {
     }
 });
 
+//?NOT WORKING
 //!User Lookup Endpoint
 //**Admin route
-router.get('/userinfo/:id', async (req, res) => {
-    const targetUserId = req.params.id;
+router.get('/userinfo/:username', async (req, res) => {
+    const targetUserUsername = req.params.username;
     const role = req.user.role;
-    //find user in db by id (if requesting user is admin)
+    //find user in db by username (if requesting user is admin)
     try {
         const query = {
             where: {
-                id: targetUserId,
+                username: targetUserUsername,
             }
         };
 
@@ -113,16 +117,17 @@ router.get('/userinfo/:id', async (req, res) => {
     }
 })
 
+//?NOT WORKING
 //!User Delete Endpoint
 //**Admin route
-router.delete('/delete/:id', async (req, res) => {
-    const targetUserId = req.params.id;
-    const role = rew.user.role;
+router.delete('/delete/:username', async (req, res) => {
+    const targetUserUsername = req.params.username;
+    const role = req.user.role;
     //delete user in db by id
     try{
         const query = {
             where: {
-                id: targetUserId,
+                id: targetUserUsername,
             }
         };
         if (role === 'Admin'){

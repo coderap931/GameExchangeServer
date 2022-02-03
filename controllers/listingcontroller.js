@@ -3,19 +3,20 @@ const router = express.Router();
 let validateJWT = require('../middleware/validate-jwt');
 const {models} = require('../models');
 
+//*SORTA WORKING
 //!Listing Create Endpoint
 router.post('/create', validateJWT, async (req, res) => {
-    const {sold, item_name, description, platform, new_used, condition, price, pictures} = req.body.listing;
-    const id = req.user;
+    const {item_name, description, platform, newInBox, condition, price, pictures} = req.body.listing;
+    const id = req.user.id;
 
     //define new listing
     const listingEntry = {
         seller_id: id,
-        sold,
+        sold: false,
         item_name,
         description,
         platform,
-        new_used,
+        newInBox,
         condition,
         price,
         pictures,
@@ -30,6 +31,7 @@ router.post('/create', validateJWT, async (req, res) => {
     }
 });
 
+//WORKING
 //!Listing Get All Endpoint
 router.get('/all', async (req, res) => {
     //get all listings from db
@@ -46,6 +48,7 @@ router.get('/all', async (req, res) => {
     }
 });
 
+//WORKING
 //!Listing Lookup Endpoint
 router.get('/listinginfo/:id', async (req, res) => {
     const listingId = req.params.id;
@@ -65,11 +68,12 @@ router.get('/listinginfo/:id', async (req, res) => {
     }
 });
 
+//*SORTA WORKING
 //!Listing Edit Endpoint
 router.put('/edit/:id', validateJWT, async (req, res) => {
-    const {sold, item_name, description, platform, new_used, condition, price, pictures} = req.body.listing;
+    const {sold, item_name, description, platform, newInBox, condition, price, pictures} = req.body.listing;
     const listingId = req.params.id;
-    const id = req.user;
+    const id = req.user.id;
 
     const query = {
         where: {
@@ -84,7 +88,7 @@ router.put('/edit/:id', validateJWT, async (req, res) => {
         item_name: item_name,
         description: description,
         platform: platform,
-        new_used: new_used,
+        newInBox: newInBox,
         condition: condition,
         price: price,
         pictures: pictures,
@@ -99,11 +103,12 @@ router.put('/edit/:id', validateJWT, async (req, res) => {
     }
 });
 
+//?NOT WORKING
 //!Listing Delete Endpoint
 //*Admin Endpoint
 router.delete('/delete/:id', validateJWT, async (req, res) => {
     const listingId = req.params.id;
-    const id = req.user;
+    const userId = req.user.id;
     const role = req.user.role;
 
     //delete listing from db by id
@@ -115,7 +120,7 @@ router.delete('/delete/:id', validateJWT, async (req, res) => {
         };
         const listingResult = await models.Listing.findOne(query);
         const sellerId = listingResult.seller_id;
-        if (id === sellerId || role === 'Admin'){
+        if (userId === sellerId || role === 'Admin'){
             const destroyResult = await models.Listing.destroy(query);
             res.status(200).json(destroyResult);
         } else {

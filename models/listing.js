@@ -27,7 +27,7 @@ const Listing = db.define("listing", {
         allowNull: false,
         unique: false,
     },
-    new_used: {
+    newInBox: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         unique: false,

@@ -6,3 +6,4 @@ Server Creation Status Updates:
 -1/27/22: Several server bug fixes, testing and debugging still in progress
 -2/1/22: Ran into major computer issue that required a complete clean OS reinstall
 -2/2/22: Computer up and running properly again, continued testing and debugging
+-2/3/22: Finalized initial testing and debugging, moving to client creation
