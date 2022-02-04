@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+let validateJWT = require('../middleware/validate-jwt');
 const {models} = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -85,10 +86,10 @@ router.post("/login", async (req, res) => {
     }
 });
 
-//?NOT WORKING
+//WORKING
 //!User Lookup Endpoint
 //**Admin route
-router.get('/userinfo/:username', async (req, res) => {
+router.get('/userinfo/:username', validateJWT, async (req, res) => {
     const targetUserUsername = req.params.username;
     const role = req.user.role;
     //find user in db by username (if requesting user is admin)
@@ -102,7 +103,9 @@ router.get('/userinfo/:username', async (req, res) => {
         //if user is found, return them (if requesting user is admin)
         if (role === 'Admin'){
             const userReturned = await models.User.findOne(query);
-            res.status(200).json(userReturned);
+            res.status(200).json({
+                message: `ID: ${userReturned.id}, First Name: ${userReturned.first_name}, Last Name ${userReturned.last_name}, Username: ${userReturned.username}, Email: ${userReturned.email}, Rating: ${userReturned.rating}, Role: ${userReturned.role}` 
+            });
         } else {
             res.status(401).json({
                 message: `You must be an administrator to view user details`,
@@ -117,17 +120,17 @@ router.get('/userinfo/:username', async (req, res) => {
     }
 })
 
-//?NOT WORKING
+//WORKING
 //!User Delete Endpoint
 //**Admin route
-router.delete('/delete/:username', async (req, res) => {
+router.delete('/delete/:username', validateJWT, async (req, res) => {
     const targetUserUsername = req.params.username;
     const role = req.user.role;
     //delete user in db by id
     try{
         const query = {
             where: {
-                id: targetUserUsername,
+                username: targetUserUsername,
             }
         };
         if (role === 'Admin'){

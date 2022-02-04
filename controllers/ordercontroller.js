@@ -3,7 +3,7 @@ const router = express.Router();
 let validateJWT = require('../middleware/validate-jwt');
 const {models} = require('../models');
 
-//*SORTA WORKING
+//WORKING
 //!Order Create Endpoint
 router.post('/create/:id', validateJWT, async (req, res) => {
     const {total_price, shipping_address} = req.body.order;
@@ -12,8 +12,8 @@ router.post('/create/:id', validateJWT, async (req, res) => {
 
     //define new Order for Listing
     const orderEntry = {
-        listing_id: listingId,
-        buyer_id: buyerId,
+        listingId: listingId,
+        userId: buyerId,
         total_price,
         date_time: new Date,
         shipping_address,
@@ -28,7 +28,7 @@ router.post('/create/:id', validateJWT, async (req, res) => {
     }
 });
 
-//*SORTA WORKING
+//WORKING
 //!Order Get All by User Endpoint
 router.get('/all', validateJWT, async (req, res) => {
     const id = req.user.id;
@@ -36,7 +36,7 @@ router.get('/all', validateJWT, async (req, res) => {
     try{
         const query = {
             where: {
-                buyer_id: id,
+                userId: id,
             }
         }
         const Orders = await models.Order.findAll(query);
@@ -52,7 +52,7 @@ router.get('/all', validateJWT, async (req, res) => {
 //!Order Lookup Endpoint
 //*Admin Endpoint
 router.get('/orderinfo/:id', validateJWT, async (req, res) => {
-    const id = req.user;
+    const id = req.user.id;
     const role = req.user.role;
     const orderId = req.params.id;
     //get specific order from db by id (if requesting user is buyer or seller or admin)
@@ -63,15 +63,15 @@ router.get('/orderinfo/:id', validateJWT, async (req, res) => {
             }
         };
         const orderReturned = await models.Order.findOne(query);
-        const listingId = orderReturned.listing_id;
-        const buyerId = orderReturned.buyer_id;
+        const listingId = orderReturned.listingId;
+        const buyerId = orderReturned.userId;
         const query_two = {
             where: {
                 id: listingId,
             }
         };
         const listingReturned = await models.Listing.findOne(query_two);
-        const sellerId = listingReturned.seller_id;
+        const sellerId = listingReturned.userId;
         if(id === buyerId || id === sellerId || role === 'Admin'){
             res.status(200).json(orderReturned);
         } else {
@@ -86,7 +86,7 @@ router.get('/orderinfo/:id', validateJWT, async (req, res) => {
     }
 });
 
-//?NOT WORKING
+//WORKING
 //!Order Delete Endpoint
 //*Admin Endpoint
 router.delete('/delete/:id', validateJWT, async (req, res) => {
@@ -100,26 +100,8 @@ router.delete('/delete/:id', validateJWT, async (req, res) => {
             }
         };
         if (role === 'Admin') {
-            const result = await models.Order.findOne(query);
-            const listingId = result.listing_id;
-            const query_two = {
-                where: {
-                    id: listingId,
-                }
-            }
-            const updatedListing = {
-                sold: false,
-                item_name,
-                description,
-                platform,
-                new_used,
-                condition,
-                price,
-                pictures,
-            }
-            const relistResult = await models.Listing.update(updatedListing, query_two);
-            const destroyResult = await models.Order.destroy(query);
-            res.status(200).json(relistResult, destroyResult);
+            const result = await models.Order.destroy(query);
+            res.status(200).json(result);
         } else {
             res.status(401).json({
                 message: `You must be an administrator to delete this order`,

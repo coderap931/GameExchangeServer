@@ -1,16 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const {models} = require("../models");
+let validateJWT = require('../middleware/validate-jwt');
+const { models } = require("../models");
 
-//?NOT WORKING
+//WORKING
 //!Pictures Create Endpoint
-router.post("/create/:id", async (req, res) => {
-    const {picture_one, picture_two, picture_three, picture_four, picture_five} = req.body.pictures;
+router.post("/create/:id", validateJWT, async (req, res) => {
+    const { picture_one, picture_two, picture_three, picture_four, picture_five } = req.body.pictures;
     const listingId = req.params.id;
-    
+    const id = req.user.id;
+
     //define new Pictures for Listing
     const picturesEntry = {
-        listing_id: listingId,
+        listingId: listingId,
         picture_one,
         picture_two,
         picture_three,
@@ -18,24 +20,46 @@ router.post("/create/:id", async (req, res) => {
         picture_five,
     }
 
-    //add new Pictures to db
-    try{
-        const newPictures = await models.Pictures.create(picturesEntry);
-        res.status(200).json(newPictures);
-    } catch (err) {
-        res.status(500).json({error: err});
+    //define query
+    const query = {
+        where: {
+            id: listingId,
+        }
     }
+
+    //check that user is owner of listing pictures are for
+    try {
+        const listingReturned = await models.Listing.findOne(query);
+        if (id === listingReturned.userId) {
+            //add new Pictures to db
+            try {
+                const newPictures = await models.Pictures.create(picturesEntry);
+                res.status(200).json(newPictures);
+            } catch (err) {
+                res.status(500).json({ error: err });
+            }
+        } else {
+            res.status(401).json({
+                message: `You must be the creator of the listing these pictures are for to edit them`,
+            })
+        }
+    } catch (err) {
+        res.status(500).json({
+            message: `Pictures could not be found: ${err}`,
+        })
+    }
+
 });
 
-//*SORT WORKING
+//WORKING
 //!Pictures Lookup Endpoint
-router.get('/lookup/:id', async (req, res) => {
+router.get('/lookup/:id',  async (req, res) => {
     const listingId = req.params.id;
     //get specific pictures from db by listing id
-    try{
+    try {
         const query = {
             where: {
-                listing_id: listingId,
+                listingId: listingId,
             }
         };
         const picturesReturned = await models.Pictures.findOne(query);
@@ -47,16 +71,22 @@ router.get('/lookup/:id', async (req, res) => {
     }
 });
 
-//?NOT WORKING
-//!!!!!!!ADD VALIDATE_JWT!!!!!!!!!
+//WORKING
 //!Pictures Edit Endpoint
-router.put('/edit/:id', async (req, res) => {
-    const {picture_one, picture_two, picture_three, picture_four, picture_five} = req.body.pictures;
+router.put('/edit/:id', validateJWT, async (req, res) => {
+    const { picture_one, picture_two, picture_three, picture_four, picture_five } = req.body.pictures;
     const listingId = req.params.id;
+    const id = req.user.id;
 
     const query = {
         where: {
-            listing_id: listingId,
+            listingId: listingId,
+        }
+    }
+
+    const query_two = {
+        where: {
+            userId: id,
         }
     }
 
@@ -69,29 +99,43 @@ router.put('/edit/:id', async (req, res) => {
         picture_five: picture_five,
     }
 
-    //update pictures
-    try{
-        const update = await models.Pictures.update(updatedPictures, query);
-        res.status(200).json(update);
+    //check that user is owner of listing pictures are for
+    try {
+        const listingReturned = await models.Listing.findOne(query_two);
+        if (id === listingReturned.userId) {
+            //edit Pictures in db
+            try {
+                const update = await models.Pictures.update(updatedPictures, query);
+                res.status(200).json(update);
+            } catch (err) {
+                res.status(500).json({ error: err });
+            }
+        } else {
+            res.status(401).json({
+                message: `You must be the creator of the listing these pictures are for to edit them`,
+            })
+        }
     } catch (err) {
-        res.status(500).json({error: err});
+        res.status(500).json({
+            message: `Pictures could not be found: ${err}`,
+        })
     }
 });
 
-//?NOT WORKING
+//WORKING
 //!Pictures Delete Endpoint
 //*Admin Endpoint
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete/:id', validateJWT, async (req, res) => {
     const listingId = req.params.id;
     const role = req.user.role;
     //delete pictures from db by listing id
-    try{
+    try {
         const query = {
             where: {
-                listing_id: listingId,
+                listingId: listingId,
             }
         };
-        if (role === 'Admin'){
+        if (role === 'Admin') {
             const result = await models.Pictures.destroy(query);
             res.status(200).json(result);
         } else {
@@ -99,9 +143,8 @@ router.delete('/delete/:id', async (req, res) => {
                 message: `You must be an administrator to delete pictures`,
             })
         }
-
     } catch (err) {
-        res.status(500).json({error: err});
+        res.status(500).json({ error: err });
     }
 });
 

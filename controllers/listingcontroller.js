@@ -3,7 +3,7 @@ const router = express.Router();
 let validateJWT = require('../middleware/validate-jwt');
 const {models} = require('../models');
 
-//*SORTA WORKING
+//WORKING
 //!Listing Create Endpoint
 router.post('/create', validateJWT, async (req, res) => {
     const {item_name, description, platform, newInBox, condition, price, pictures} = req.body.listing;
@@ -11,7 +11,7 @@ router.post('/create', validateJWT, async (req, res) => {
 
     //define new listing
     const listingEntry = {
-        seller_id: id,
+        userId: id,
         sold: false,
         item_name,
         description,
@@ -68,7 +68,7 @@ router.get('/listinginfo/:id', async (req, res) => {
     }
 });
 
-//*SORTA WORKING
+//WORKING
 //!Listing Edit Endpoint
 router.put('/edit/:id', validateJWT, async (req, res) => {
     const {sold, item_name, description, platform, newInBox, condition, price, pictures} = req.body.listing;
@@ -78,7 +78,7 @@ router.put('/edit/:id', validateJWT, async (req, res) => {
     const query = {
         where: {
             id: listingId,
-            seller_id: id,
+            userId: id,
         }
     }
 
@@ -103,7 +103,7 @@ router.put('/edit/:id', validateJWT, async (req, res) => {
     }
 });
 
-//?NOT WORKING
+//WORKING
 //!Listing Delete Endpoint
 //*Admin Endpoint
 router.delete('/delete/:id', validateJWT, async (req, res) => {
@@ -119,7 +119,7 @@ router.delete('/delete/:id', validateJWT, async (req, res) => {
             }
         };
         const listingResult = await models.Listing.findOne(query);
-        const sellerId = listingResult.seller_id;
+        const sellerId = listingResult.userId;
         if (userId === sellerId || role === 'Admin'){
             const destroyResult = await models.Listing.destroy(query);
             res.status(200).json(destroyResult);
