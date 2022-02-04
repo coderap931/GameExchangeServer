@@ -16,7 +16,7 @@ app.use("/pictures", controllers.picturescontroller);
 dbConnection.authenticate()
     .then(() => dbConnection.sync())
     .then(() => {
-        app.listen(3000, () =>
+        app.listen(process.env.DATABASE_PORT, () =>
         console.log(`[Server: ] App is listening on Port ${process.env.DATABASE_PORT}`));
     })
     .catch((err) => {
