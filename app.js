@@ -16,8 +16,8 @@ app.use("/pictures", controllers.picturescontroller);
 dbConnection.authenticate()
     .then(() => dbConnection.sync())
     .then(() => {
-        app.listen(process.env.DATABASE_PORT, () =>
-        console.log(`[Server: ] App is listening on Port ${process.env.DATABASE_PORT}`));
+        app.listen(process.env.PORT, () =>
+        console.log(`[Server: ] App is listening on Port ${process.env.PORT}`));
     })
     .catch((err) => {
         console.log(`[Server: ] Server Crashed. Error: ${err}`);

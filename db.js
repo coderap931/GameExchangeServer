@@ -6,7 +6,7 @@ const {Sequelize} = require('sequelize');
 // });
 
 //!For Deployment, uncomment this and comment out Local DB connection
-const db = new Sequelize(`postgres://postgres:${encodeURIComponent(process.env.DATABASE_PASSWORD)}`, {
+const db = new Sequelize(`postgres://postgres:${encodeURIComponent(process.env.PASS)}@localhost/gameExchange`, {
     dialect: 'postgres',
     dialectOptions: {
         ssl: {
