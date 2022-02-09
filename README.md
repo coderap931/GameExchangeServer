@@ -7,3 +7,4 @@ Server Creation Status Updates:
 -2/1/22: Ran into major computer issue that required a complete clean OS reinstall
 -2/2/22: Computer up and running properly again, continued testing and debugging
 -2/3/22: Finalized initial testing and debugging, moving to deployment and client creation
+-2/8/22: Deployment complete and functional
