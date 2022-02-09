@@ -1,12 +1,12 @@
 const {Sequelize} = require('sequelize');
 
-//!For Local DB, change for deployment
+// !For Local DB, change for deployment
 // const db = new Sequelize(`postgres://postgres:${process.env.DATABASE_PASSWORD}@localhost:5432/gameExchange`,{
 //     dialect: 'postgres',
 // });
 
 //!For Deployment, uncomment this and comment out Local DB connection
-const db = new Sequelize(`postgres://${process.env.USER}:${process.env.PASS}@${process.env.HOST}/${process.env.DBNAME}`, {
+const db = new Sequelize(`${process.env.DATABASE_URL}`, {
     dialect: 'postgres',
     dialectOptions: {
         ssl: {
