@@ -48,6 +48,26 @@ router.get('/all', async (req, res) => {
     }
 });
 
+//?Unknown
+//!Listing Get Users Endpoint
+router.get('/yours', async (req, res) => {
+    const id = req.user.id;
+    //get all of users listings from db by userId
+    try{
+        const query = {
+            where: {
+                userId: id,
+            }
+        };
+        const usersListings = await models.Listing.findAll(query);
+        res.status(200).json(usersListings);
+    } catch (err) {
+        res.status(500).json({
+            message: `Your Listings could not be found: ${err}`,
+        })
+    }
+})
+
 //WORKING
 //!Listing Lookup Endpoint
 router.get('/listinginfo/:id', async (req, res) => {
