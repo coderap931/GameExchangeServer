@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const cors = require('cors');
 let validateJWT = require('../middleware/validate-jwt');
 const {models} = require('../models');
 const Listing = require('../models/listing');
+router.use(cors());
 
 //WORKING
 //!Order Create Endpoint

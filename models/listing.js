@@ -42,11 +42,6 @@ const Listing = db.define("listing", {
         allowNull: false,
         unique: false,
     },
-    pictures: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        unique: false,
-    },
 });
 
 module.exports = Listing;

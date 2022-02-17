@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
+const cors = require('cors');
 let validateJWT = require('../middleware/validate-jwt');
 const {models} = require('../models');
 const Pictures = require('../models/pictures');
+router.use(cors());
 
 //WORKING
 //!Listing Create Endpoint
 router.post('/create', validateJWT, async (req, res) => {
-    const {item_name, description, platform, newInBox, condition, price, pictures} = req.body.listing;
+    const {item_name, description, platform, newInBox, condition, price} = req.body.listing;
     const id = req.user.id;
 
     //define new listing
@@ -20,7 +22,6 @@ router.post('/create', validateJWT, async (req, res) => {
         newInBox,
         condition,
         price,
-        pictures,
     }
 
     //add new listing to db
@@ -53,7 +54,7 @@ router.get('/all', async (req, res) => {
 
 //?Unknown
 //!Listing Get Users Endpoint
-router.get('/yours', async (req, res) => {
+router.get('/yours', validateJWT, async (req, res) => {
     const id = req.user.id;
     //get all of users listings from db by userId
     try{
@@ -94,7 +95,7 @@ router.get('/listinginfo/:id', async (req, res) => {
 //WORKING
 //!Listing Edit Endpoint
 router.put('/edit/:id', validateJWT, async (req, res) => {
-    const {sold, item_name, description, platform, newInBox, condition, price, pictures} = req.body.listing;
+    const {sold, item_name, description, platform, newInBox, condition, price} = req.body.listing;
     const listingId = req.params.id;
     const id = req.user.id;
 
@@ -114,7 +115,6 @@ router.put('/edit/:id', validateJWT, async (req, res) => {
         newInBox: newInBox,
         condition: condition,
         price: price,
-        pictures: pictures,
     }
 
     //update listing
