@@ -2,21 +2,21 @@ const express = require('express');
 const router = express.Router();
 let validateJWT = require('../middleware/validate-jwt');
 const {models} = require('../models');
+const Listing = require('../models/listing');
 
 //WORKING
 //!Order Create Endpoint
 router.post('/create/:id', validateJWT, async (req, res) => {
     const {total_price, shipping_address} = req.body.order;
-    const listingId = req.params.id;
     const buyerId = req.user.id;
 
     //define new Order for Listing
     const orderEntry = {
-        listingId: listingId,
         userId: buyerId,
         total_price,
         date_time: new Date,
         shipping_address,
+        listing,
     }
 
     //add new Order to db
@@ -39,7 +39,7 @@ router.get('/all', validateJWT, async (req, res) => {
                 userId: id,
             }
         }
-        const Orders = await models.Order.findAll(query);
+        const Orders = await models.Order.findAll(query, {include: [Listing]});
         res.status(200).json(Orders)
     } catch (err) {
         res.status(500).json({
@@ -62,15 +62,9 @@ router.get('/orderinfo/:id', validateJWT, async (req, res) => {
                 id: orderId,
             }
         };
-        const orderReturned = await models.Order.findOne(query);
-        const listingId = orderReturned.listingId;
+        const orderReturned = await models.Order.findOne(query, {include: [Listing]});
+        const listingReturned = orderReturned.listing;
         const buyerId = orderReturned.userId;
-        const query_two = {
-            where: {
-                id: listingId,
-            }
-        };
-        const listingReturned = await models.Listing.findOne(query_two);
         const sellerId = listingReturned.userId;
         if(id === buyerId || id === sellerId || role === 'Admin'){
             res.status(200).json(orderReturned);

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 let validateJWT = require('../middleware/validate-jwt');
 const {models} = require('../models');
+const Pictures = require('../models/pictures');
 
 //WORKING
 //!Listing Create Endpoint
@@ -36,7 +37,9 @@ router.post('/create', validateJWT, async (req, res) => {
 router.get('/all', async (req, res) => {
     //get all listings from db
     try{
-        const Listings = await models.Listing.findAll();
+        const Listings = await models.Listing.findAll({
+            include: [Pictures],
+        });
         res.status(200).json({
             listings: Listings,
             message: "Listings fetched",
@@ -59,7 +62,7 @@ router.get('/yours', async (req, res) => {
                 userId: id,
             }
         };
-        const usersListings = await models.Listing.findAll(query);
+        const usersListings = await models.Listing.findAll(query, {include: [Pictures]});
         res.status(200).json(usersListings);
     } catch (err) {
         res.status(500).json({
@@ -79,7 +82,7 @@ router.get('/listinginfo/:id', async (req, res) => {
                 id: listingId,
             }
         };
-        const listingReturned = await models.Listing.findOne(query);
+        const listingReturned = await models.Listing.findOne(query, {include: [Pictures]});
         res.status(200).json(listingReturned);
     } catch (err) {
         res.status(500).json({
@@ -142,6 +145,7 @@ router.delete('/delete/:id', validateJWT, async (req, res) => {
         const sellerId = listingResult.userId;
         if (userId === sellerId || role === 'Admin'){
             const destroyResult = await models.Listing.destroy(query);
+            
             res.status(200).json(destroyResult);
         } else {
             res.status(401).json({
