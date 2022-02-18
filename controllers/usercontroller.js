@@ -35,7 +35,6 @@ router.post("/register", async (req, res) => {
         let token = jwt.sign({id: newUser.id}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
         console.log("assigning token");
         res.status(200).json({
-            message: "Success",
             user: newUser,
             sessionToken: token
         });
@@ -76,7 +75,6 @@ router.post("/login", async (req, res) => {
             let token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
             res.status(200).json({
                 username: user.username,
-                message: "Login successful",
                 user: userAuth,
                 sessionToken: token,
             });

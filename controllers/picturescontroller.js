@@ -59,10 +59,7 @@ router.get('/all', async (req, res) => {
     //Get all pictures
     try{
         const Pictures = await models.Pictures.findAll();
-        res.status(200).json({
-            pictures: Pictures,
-            message: "Pictures fetched",
-        })
+        res.status(200).json(Pictures)
     } catch (err) {
         res.status(500).json({
             message: `Pictures could not be found: ${err}`,

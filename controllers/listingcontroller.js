@@ -41,10 +41,7 @@ router.get('/all', async (req, res) => {
         const Listings = await models.Listing.findAll({
             include: [Pictures],
         });
-        res.status(200).json({
-            listings: Listings,
-            message: "Listings fetched",
-        })
+        res.status(200).json(Listings)
     } catch (err) {
         res.status(500).json({
             message: `Listings could not be found: ${err}`,
@@ -52,7 +49,7 @@ router.get('/all', async (req, res) => {
     }
 });
 
-//?Unknown
+//WORKING
 //!Listing Get Users Endpoint
 router.get('/yours', validateJWT, async (req, res) => {
     const id = req.user.id;
