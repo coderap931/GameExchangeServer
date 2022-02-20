@@ -6,6 +6,7 @@ const dbConnection = require("./db");
 app.use(require("./middleware/headers"));
 const controllers = require("./controllers");
 
+app.use(cors());
 app.use(Express.json());
 
 app.use("/user", controllers.usercontroller);
