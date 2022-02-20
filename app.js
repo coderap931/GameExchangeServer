@@ -11,7 +11,6 @@ app.use(Express.json());
 app.use("/user", controllers.usercontroller);
 app.use("/listing", controllers.listingcontroller);
 app.use("/order", controllers.ordercontroller);
-app.use("/pictures", controllers.picturescontroller);
 
 dbConnection.authenticate()
     .then(() => dbConnection.sync())

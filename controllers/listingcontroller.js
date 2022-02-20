@@ -3,13 +3,12 @@ const router = express.Router();
 const cors = require('cors');
 let validateJWT = require('../middleware/validate-jwt');
 const {models} = require('../models');
-const Pictures = require('../models/pictures');
 router.use(cors());
 
 //WORKING
 //!Listing Create Endpoint
 router.post('/create', validateJWT, async (req, res) => {
-    const {item_name, description, platform, newInBox, condition, price} = req.body.listing;
+    const {item_name, description, platform, newInBox, condition, price, pictureOne, pictureTwo, pictureThree} = req.body.listing;
     const id = req.user.id;
 
     //define new listing
@@ -22,6 +21,9 @@ router.post('/create', validateJWT, async (req, res) => {
         newInBox,
         condition,
         price,
+        pictureOne,
+        pictureTwo,
+        pictureThree
     }
 
     //add new listing to db
@@ -38,9 +40,7 @@ router.post('/create', validateJWT, async (req, res) => {
 router.get('/all', async (req, res) => {
     //get all listings from db
     try{
-        const Listings = await models.Listing.findAll({
-            include: [Pictures],
-        });
+        const Listings = await models.Listing.findAll();
         res.status(200).json(Listings)
     } catch (err) {
         res.status(500).json({
@@ -60,7 +60,7 @@ router.get('/yours', validateJWT, async (req, res) => {
                 userId: id,
             }
         };
-        const usersListings = await models.Listing.findAll(query, {include: [Pictures]});
+        const usersListings = await models.Listing.findAll(query);
         res.status(200).json(usersListings);
     } catch (err) {
         res.status(500).json({
@@ -80,7 +80,7 @@ router.get('/listinginfo/:id', async (req, res) => {
                 id: listingId,
             }
         };
-        const listingReturned = await models.Listing.findOne(query, {include: [Pictures]});
+        const listingReturned = await models.Listing.findOne(query);
         res.status(200).json(listingReturned);
     } catch (err) {
         res.status(500).json({
@@ -92,7 +92,7 @@ router.get('/listinginfo/:id', async (req, res) => {
 //WORKING
 //!Listing Edit Endpoint
 router.put('/edit/:id', validateJWT, async (req, res) => {
-    const {sold, item_name, description, platform, newInBox, condition, price} = req.body.listing;
+    const {sold, item_name, description, platform, newInBox, condition, price, pictureOne, pictureTwo, pictureThree} = req.body.listing;
     const listingId = req.params.id;
     const id = req.user.id;
 
@@ -112,6 +112,9 @@ router.put('/edit/:id', validateJWT, async (req, res) => {
         newInBox: newInBox,
         condition: condition,
         price: price,
+        pictureOne: pictureOne,
+        pictureTwo: pictureTwo,
+        pictureThree: pictureThree
     }
 
     //update listing

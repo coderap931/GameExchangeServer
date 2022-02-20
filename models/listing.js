@@ -42,6 +42,21 @@ const Listing = db.define("listing", {
         allowNull: false,
         unique: false,
     },
+    pictureOne: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        unique: false,
+    },
+    pictureTwo: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        unique: false,
+    },
+    pictureThree: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        unique: false,
+    },
 });
 
 module.exports = Listing;
