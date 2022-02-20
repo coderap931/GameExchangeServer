@@ -7,6 +7,16 @@ const Order = db.define("order", {
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
     },
+    userId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        unique: false
+    },
+    listingId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        unique: false
+    },
     total_price: {
         type: DataTypes.DECIMAL,
         allowNull: false,
@@ -21,7 +31,7 @@ const Order = db.define("order", {
         type: DataTypes.STRING,
         allowNull: false,
         unique: false,
-    },
+    }
 });
 
 module.exports = Order;

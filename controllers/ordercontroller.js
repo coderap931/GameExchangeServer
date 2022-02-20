@@ -10,15 +10,16 @@ router.use(cors());
 //!Order Create Endpoint
 router.post('/create/:id', validateJWT, async (req, res) => {
     const {total_price, shipping_address} = req.body.order;
+    const listingId = req.params.id;
     const buyerId = req.user.id;
 
     //define new Order for Listing
     const orderEntry = {
         userId: buyerId,
+        listingId: listingId,
         total_price,
         date_time: new Date,
         shipping_address,
-        listing,
     }
 
     //add new Order to db
@@ -99,7 +100,7 @@ router.delete('/delete/:id', validateJWT, async (req, res) => {
             const result = await models.Order.destroy(query);
             res.status(200).json(result);
         } else {
-            res.status(401).json({
+            res.status(400).json({
                 message: `You must be an administrator to delete this order`,
             })
         }
