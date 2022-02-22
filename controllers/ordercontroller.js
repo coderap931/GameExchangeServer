@@ -84,6 +84,35 @@ router.get('/orderinfo/:id', validateJWT, async (req, res) => {
 });
 
 //WORKING
+//!Order Edit Endpoint
+router.put('/edit/:id', validateJWT, async (req, res) => {
+    const shipping_address = req.body.order;
+    const orderId = req.params.id;
+    const id = req.user.id;
+
+    const query = {
+        where: {
+            id: orderId,
+            userId: id,
+        }
+    }
+
+    //define editted order
+    const updatedOrder = {
+        shipping_address: shipping_address
+    }
+
+    //update order
+    try{
+        const update = await models.Order.update(updatedOrder, query);
+        res.status(200).json(update);
+    } catch (err) {
+        res.status(500).json({error: err});
+    }
+});
+
+
+//WORKING
 //!Order Delete Endpoint
 //*Admin Endpoint
 router.delete('/delete/:id', validateJWT, async (req, res) => {

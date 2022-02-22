@@ -12,16 +12,10 @@ router.use(cors());
 router.post("/register", async (req, res) => {
     //register new user in db
     try{
-        console.log("entered try");
         const{first_name, last_name, username, email, password, role} = req.body.user;
-        console.log("got values from body");
-        console.log("Values: ", first_name, last_name, username, email, password, role);
         //encrypt password
         const salt = bcrypt.genSaltSync(); //generate salt
-        console.log("generated salt");
         const pwHashed = bcrypt.hashSync(password, salt); //hash password
-        console.log("hashed password");
-        console.log(pwHashed);
         const newUser = await models.User.create({ //create user server-side
             first_name,
             last_name,
@@ -31,9 +25,7 @@ router.post("/register", async (req, res) => {
             rating: 100,
             role,
         });
-        console.log("newUser assigned values");
         let token = jwt.sign({id: newUser.id}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
-        console.log("assigning token");
         res.status(200).json({
             user: newUser,
             sessionToken: token
@@ -44,6 +36,48 @@ router.post("/register", async (req, res) => {
                 message: `${err}`,
             });
         }
+    }
+});
+
+//WORKING
+//!User Register Endpoint
+router.post("/registeradmin", validateJWT, async (req, res) => {
+    const role = req.user.role;
+
+    if (role === 'Admin') {
+        //register new user in db
+        try{
+            const{first_name, last_name, username, email, password, role} = req.body.user;
+            //encrypt password
+            const salt = bcrypt.genSaltSync(); //generate salt
+            const pwHashed = bcrypt.hashSync(password, salt); //hash password
+            const newUser = await models.User.create({ //create user server-side
+                first_name,
+                last_name,
+                username,
+                email,
+                password: pwHashed,
+                rating: 100,
+                role,
+            });
+            console.log("newUser assigned values");
+            let token = jwt.sign({id: newUser.id}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
+            console.log("assigning token");
+            res.status(200).json({
+                user: newUser,
+                sessionToken: token
+            });
+        } catch (err) {
+            if (err) {
+                res.status(500).json({
+                    message: `${err}`,
+                });
+            }
+        }
+    } else {
+        res.status(401).json({
+            message: 'You must be an administrator to access this page'
+        })
     }
 });
 
@@ -85,6 +119,27 @@ router.post("/login", async (req, res) => {
         });
     }
 });
+
+//WORKING
+//!User Role Lookup Endpoint
+router.get('/userrole', validateJWT, async (req, res) => {
+    const targetUserUsername = req.user.username;
+    try {
+        const query = {
+            where: {
+                username: targetUserUsername,
+            }
+        };
+            const userReturned = await models.User.findOne(query);
+            res.status(200).json({
+                role: userReturned.role
+            });
+    } catch (err) {
+        res.status(500).json({
+            message: `An error occurreed: ${err}`,
+        })
+    }
+})
 
 //WORKING
 //!User Lookup Endpoint
