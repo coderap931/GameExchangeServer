@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const cors = require('cors');
 let validateJWT = require('../middleware/validate-jwt');
-const {models} = require('../models');
+const { models } = require('../models');
 const Listing = require('../models/listing');
 router.use(cors());
 
 //WORKING
 //!Order Create Endpoint
 router.post('/create/:id', validateJWT, async (req, res) => {
-    const {total_price, shipping_address} = req.body.order;
+    const { total_price, shipping_address } = req.body.order;
     const listingId = req.params.id;
     const buyerId = req.user.id;
 
@@ -23,11 +23,11 @@ router.post('/create/:id', validateJWT, async (req, res) => {
     }
 
     //add new Order to db
-    try{
+    try {
         const newOrder = await models.Order.create(orderEntry);
         res.status(200).json(newOrder);
     } catch (err) {
-        res.status(500).json({error: err});
+        res.status(500).json({ error: err });
     }
 });
 
@@ -36,13 +36,13 @@ router.post('/create/:id', validateJWT, async (req, res) => {
 router.get('/all', validateJWT, async (req, res) => {
     const id = req.user.id;
     //get all orders for user from db by userId
-    try{
+    try {
         const query = {
             where: {
                 userId: id,
             }
         }
-        const Orders = await models.Order.findAll(query, {include: [Listing]});
+        const Orders = await models.Order.findAll(query, { include: [Listing] });
         res.status(200).json(Orders)
     } catch (err) {
         res.status(500).json({
@@ -59,17 +59,17 @@ router.get('/orderinfo/:id', validateJWT, async (req, res) => {
     const role = req.user.role;
     const orderId = req.params.id;
     //get specific order from db by id (if requesting user is buyer or seller or admin)
-    try{
+    try {
         const query = {
             where: {
                 id: orderId,
             }
         };
-        const orderReturned = await models.Order.findOne(query, {include: [Listing]});
+        const orderReturned = await models.Order.findOne(query, { include: [Listing] });
         const listingReturned = orderReturned.listing;
         const buyerId = orderReturned.userId;
         const sellerId = listingReturned.userId;
-        if(id === buyerId || id === sellerId || role === 'Admin'){
+        if (id === buyerId || id === sellerId || role === 'Admin') {
             res.status(200).json(orderReturned);
         } else {
             res.status(401).json({
@@ -86,7 +86,7 @@ router.get('/orderinfo/:id', validateJWT, async (req, res) => {
 //WORKING
 //!Order Edit Endpoint
 router.put('/edit/:id', validateJWT, async (req, res) => {
-    const shipping_address = req.body.order;
+    const {shipping_address} = req.body.order;
     const orderId = req.params.id;
     const id = req.user.id;
 
@@ -103,38 +103,32 @@ router.put('/edit/:id', validateJWT, async (req, res) => {
     }
 
     //update order
-    try{
+    try {
         const update = await models.Order.update(updatedOrder, query);
         res.status(200).json(update);
     } catch (err) {
-        res.status(500).json({error: err});
+        res.status(500).json({ error: err });
     }
 });
 
 
 //WORKING
 //!Order Delete Endpoint
-//*Admin Endpoint
 router.delete('/delete/:id', validateJWT, async (req, res) => {
     const orderId = req.params.id;
-    const role = req.user.role;
+    const userId = req.user.id;
     //delete order from db by id and change listing.sold bool to false from true (if requesting user is admin)
-    try{
+    try {
         const query = {
             where: {
                 id: orderId,
+                userId: userId
             }
         };
-        if (role === 'Admin') {
-            const result = await models.Order.destroy(query);
-            res.status(200).json(result);
-        } else {
-            res.status(400).json({
-                message: `You must be an administrator to delete this order`,
-            })
-        }
+        const result = await models.Order.destroy(query);
+        res.status(200).json(result);
     } catch (err) {
-        res.status(500).json({error: err});
+        res.status(500).json({ error: err });
     }
 });
 

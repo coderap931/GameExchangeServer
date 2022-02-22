@@ -12,6 +12,11 @@ const Listing = db.define("listing", {
         allowNull: false,
         unique: false,
     },
+    orderId: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        unique: false,
+    },
     item_name: {
         type: DataTypes.TEXT,
         allowNull: false,

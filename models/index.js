@@ -8,10 +8,10 @@ User.hasMany(Listing);
 User.hasMany(Order);
 
 Listing.belongsTo(User);
-Listing.hasOne(Order);
+Listing.belongsTo(Order);
 
 Order.belongsTo(User);
-Order.belongsTo(Listing);
+Order.hasOne(Listing);
 
 module.exports = {
     dbConnection: db,

@@ -15,6 +15,7 @@ router.post('/create', validateJWT, async (req, res) => {
     const listingEntry = {
         userId: id,
         sold: false,
+        orderId: null,
         item_name,
         description,
         platform,
@@ -92,7 +93,7 @@ router.get('/listinginfo/:id', async (req, res) => {
 //WORKING
 //!Listing Edit Endpoint
 router.put('/edit/:id', validateJWT, async (req, res) => {
-    const {sold, item_name, description, platform, newInBox, condition, price, pictureOne, pictureTwo, pictureThree} = req.body.listing;
+    const {orderId, sold, item_name, description, platform, newInBox, condition, price, pictureOne, pictureTwo, pictureThree} = req.body.listing;
     const listingId = req.params.id;
     const id = req.user.id;
 
@@ -105,6 +106,7 @@ router.put('/edit/:id', validateJWT, async (req, res) => {
 
     //define editted listing
     const updatedListing = {
+        orderId: orderId,
         sold: sold,
         item_name: item_name,
         description: description,

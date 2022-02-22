@@ -122,8 +122,8 @@ router.post("/login", async (req, res) => {
 
 //WORKING
 //!User Role Lookup Endpoint
-router.get('/userrole', validateJWT, async (req, res) => {
-    const targetUserUsername = req.user.username;
+router.get('/userrole/:username', async (req, res) => {
+    const targetUserUsername = req.params.username;
     try {
         const query = {
             where: {
