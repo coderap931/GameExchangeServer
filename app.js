@@ -3,8 +3,8 @@ const Express = require("express");
 const app = Express();
 const cors = require('cors');
 
-let whitelist=['http://localhost:3001', 'https://amp-gameexchange.herokuapp.com/', 'http://localhost:3000'];
-app.use(cors({origin: whitelist, credentials: true}));
+app.use(require("./middleware/headers"));
+app.use(cors());
 const dbConnection = require("./db");
 const controllers = require("./controllers");
 app.use(Express.json());
