@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const cors = require('cors');
+require('cors');
 let validateJWT = require('../middleware/validate-jwt');
 const {models} = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-router.use(cors());
 
 //WORKING
 //!User Register Endpoint
