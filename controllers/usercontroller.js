@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-require('cors');
 let validateJWT = require('../middleware/validate-jwt');
 const {models} = require("../models");
 const bcrypt = require("bcryptjs");

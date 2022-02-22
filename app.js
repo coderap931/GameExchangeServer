@@ -1,13 +1,12 @@
 require("dotenv").config();
 const Express = require("express");
 const app = Express();
-const dbConnection = require("./db");
-
-const controllers = require("./controllers");
 const cors = require('cors');
 
 let whitelist=['http://localhost:3001', 'https://amp-gameexchange.herokuapp.com/', 'http://localhost:3000'];
 app.use(cors({origin: whitelist, credentials: true}));
+const dbConnection = require("./db");
+const controllers = require("./controllers");
 app.use(Express.json());
 
 app.use("/user", controllers.usercontroller);
