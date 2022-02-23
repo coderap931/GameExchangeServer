@@ -94,7 +94,8 @@ router.post("/login", async (req, res) => {
         //verify user credentials
 
         //if passwords do not match
-        if(!user.username) {
+        const userAuth = bcrypt.compareSync(password, user.password);
+        if(!user.username || userAuth === false) {
             res.status(401).json({
                 message: "Invalid credentials"
             });
@@ -102,8 +103,6 @@ router.post("/login", async (req, res) => {
 
             //if passwords do match
         } else {
-            //!Reexamine logic, why is userAuth declared but not read?
-            const userAuth = bcrypt.compareSync(password, user.password);
             let token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: 60 * 60 * 24});
             res.status(200).json({
                 username: user.username,
