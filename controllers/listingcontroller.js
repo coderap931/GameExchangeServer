@@ -46,7 +46,7 @@ router.get('/all', async (req, res) => {
             message: `Listings could not be found: ${err}`,
         })
     }
-});
+}); 
 
 //WORKING
 //!Listing Get Users Endpoint
